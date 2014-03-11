@@ -115,7 +115,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 }
     public void dessiner(){
         openList.add(depart);
-        for(;openList.size()>0;){
+        while(openList.size()>0){
             Node current = findBestOpen();
             closedList.add(current);
             current.setColor(Color.pink);
@@ -158,7 +158,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
                 voisin.setColor(Color.gray);
                 voisin.setParent(current);
                 voisin.setG_movementCost(current.getG_movementCost()+ COUT );
-                voisin.setH_heuristique(distance(voisin.getXpos(),voisin.getYpos()));
+                voisin.setH_heuristique(calculHeuristique(voisin.getXpos(), voisin.getYpos()));
 
             }else{
                  int newG = current.getG_movementCost() + COUT;
@@ -179,17 +179,17 @@ public class FrameGeneral extends JFrame implements ActionListener{
         int x_cur = current.getXpos();
         int y_cur = current.getYpos();
         if(view_grid.valideCoord(x_cur+1,y_cur))
-            voisins.add(view_grid.grids[x_cur+1][y_cur]) ;
+            voisins.add(view_grid.grids[x_cur+1][y_cur]) ;  // North
         if(view_grid.valideCoord(x_cur-1,y_cur))
-             voisins.add(view_grid.grids[x_cur-1][y_cur]) ;
+             voisins.add(view_grid.grids[x_cur-1][y_cur]) ; // South
         if(view_grid.valideCoord(x_cur,y_cur+1))
-             voisins.add(view_grid.grids[x_cur][y_cur+1]) ;
+             voisins.add(view_grid.grids[x_cur][y_cur+1]) ; // Est
         if(view_grid.valideCoord(x_cur,y_cur-1))
-             voisins.add(view_grid.grids[x_cur][y_cur-1]) ;
+             voisins.add(view_grid.grids[x_cur][y_cur-1]) ; // Ouest
 
         return voisins;
     }
-    public double distance(int x1, int y1){
+    public double calculHeuristique(int x1, int y1){
 
         //return  (Math.abs((x1 -arrive.getXpos()) + Math.abs(y1 - arrive.getYpos())))* COUT;
        return Math.sqrt(Math.pow(x1 - arrive.getXpos(),2) + (Math.pow(y1 - arrive.getYpos(),2))) * COUT;

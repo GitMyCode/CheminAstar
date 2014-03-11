@@ -2,7 +2,6 @@
  * Created by desk on 2/9/14.
  */
 
-import Controllers.Points;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -58,10 +57,7 @@ public class Grid extends JPanel implements MouseListener{
         return nb_square;
     }
 
-    public void addPoint(Points p){
-        grids[p.getX()][p.getY()].setColor(p.getColor());
-    }
-    public void setNode(int i, int j, int state){
+   public void setNode(int i, int j, int state){
         grids[i][j].setState(state);
 
     }

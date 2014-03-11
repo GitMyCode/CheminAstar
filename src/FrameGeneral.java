@@ -1,6 +1,3 @@
-
-import Views.OptionsView;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -89,6 +86,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+
 
         System.out.println(actionEvent.getActionCommand());
         if(actionEvent.getActionCommand() == "Reset"){

@@ -21,7 +21,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
     public static final int START  = 2;
     public static final int ARRIVE = 3;
 
-    public static final int COUT = 15;
+    public static final int COUT = 10;
     JFrame frame;
     public OptionsView optionsView;
     public Grid view_grid;
@@ -132,7 +132,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
         for(Node pathNode : path){
             System.out.println("un pas");
-            pathNode.setColor(Color.orange);
+            pathNode.setColor(Color.BLUE);
 
         }
         depart.setColor(Color.GREEN);
@@ -141,7 +141,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
     public Node findBestOpen(){
         Node best = openList.get(0);
-        int best_Cost = best.getF_totalCost();
+        double best_Cost = best.getF_totalCost();
         for(Node n : openList){
             if(n.getF_totalCost() < best_Cost){
                 best_Cost = n.getF_totalCost();
@@ -189,10 +189,12 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
         return voisins;
     }
-    public int distance(int x1, int y1){
+    public double distance(int x1, int y1){
 
-       return (int) (Math.abs((x1 -arrive.getXpos()) + Math.abs(y1 - arrive.getYpos())))*COUT;
-    //return (int) Math.sqrt(Math.pow((x1 -arrive.getXpos()),2) + Math.pow((y1 - arrive.getYpos()),2));  Ne marche pas
+        //return  (Math.abs((x1 -arrive.getXpos()) + Math.abs(y1 - arrive.getYpos())))* COUT;
+       return Math.sqrt(Math.pow(x1 - arrive.getXpos(),2) + (Math.pow(y1 - arrive.getYpos(),2))) * COUT;
+
+
 
     }
 

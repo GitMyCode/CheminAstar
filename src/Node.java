@@ -2,7 +2,10 @@
 
 
 
+import sun.font.TextLabel;
+
 import javax.swing.*;
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.util.Random;
 
@@ -21,9 +24,13 @@ public class Node extends JPanel{
     public final int START  = 2;
     public final int ARRIVE = 3;
 
-    private int h_heuristique =0;
+    private double h_heuristique =0;
     private int g_movementCost =0;
     private int f_totalCost =0;
+    private TextArea text_heuristique;
+
+
+
 
     private Node parent;
     private int x;
@@ -33,10 +40,15 @@ public class Node extends JPanel{
     private Color state_color = Color.white;
 
      public Node(){
+
+
         super();
         this.setBorder(BorderFactory.createLineBorder(Color.black));
         this.setPreferredSize(new Dimension(100, 100));
         this.setBackground(getColor());
+         text_heuristique.setText("1");
+
+        add(text_heuristique, BorderLayout.NORTH);
     }
 
     public Node( int x, int y){
@@ -67,11 +79,12 @@ public class Node extends JPanel{
 
         /*Wow cette affaire la donne antialiasing
         * donc beaucoup plus beau*/
-        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        //((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
         g.setColor(getColor());
         Dimension dim = getSize();
-        g.fillOval(6, 6, dim.width -10, dim.height - 10);
+        g.fillRect(0,0,dim.width,dim.height);
+       // g.fillOval(6, 6, dim.width -10, dim.height - 10);
     }
 
     public Color getColor(){
@@ -97,7 +110,7 @@ public class Node extends JPanel{
     }
 
 
-    public int getH_heuristique() {
+    public double getH_heuristique() {
         return this.h_heuristique;
     }
 
@@ -105,7 +118,7 @@ public class Node extends JPanel{
         return g_movementCost;
     }
 
-    public int getF_totalCost(){
+    public double getF_totalCost(){
         return g_movementCost + h_heuristique;
     }
 
@@ -122,7 +135,7 @@ public class Node extends JPanel{
         return state;
     }
 
-    public void setH_heuristique(int h_heuristique) {
+    public void setH_heuristique(double h_heuristique) {
         this.h_heuristique = h_heuristique;
     }
 

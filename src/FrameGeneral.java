@@ -195,6 +195,43 @@ public class FrameGeneral extends JFrame implements ActionListener{
        return Math.sqrt(Math.pow(x1 - arrive.getXpos(),2) + (Math.pow(y1 - arrive.getYpos(),2))) * COUT;
 
 
+        /*heuristique trouver sur le net
+
+         case HeuristicType.Manhattan:
+                    H = Math.Abs(StartX - EndX) + Math.Abs(StartY - EndY);
+                    break;
+
+                case HeuristicType.Diagonal:
+                    H = Math.Max(Math.Abs(StartX - EndX), Math.Abs(StartY - EndY));
+                    break;
+
+                case HeuristicType.Euclidean:
+                    H = Math.Sqrt(Math.Pow(StartX - EndX, 2) + Math.Pow(StartY - EndY, 2));
+                    break;
+
+                case HeuristicType.EuclideanSquared:
+                    H = Math.Pow(StartX - EndX, 2) + Math.Pow(StartY - EndY, 2);
+                    break;
+
+                case HeuristicType.TieBreakerManhattan:
+                    H = Math.Abs(StartX - EndX) + Math.Abs(StartY - EndY) * m_tieBreaker;
+                    break;
+
+                case HeuristicType.TieBreakerDiagonal:
+                    H = Math.Max(Math.Abs(StartX - EndX), Math.Abs(StartY - EndY)) * m_tieBreaker;
+                    break;
+
+                case HeuristicType.TieBreakerEuclidean:
+                    H = Math.Sqrt(Math.Pow(StartX - EndX, 2) + Math.Pow(StartY - EndY, 2)) * m_tieBreaker;
+                    break;
+
+                case HeuristicType.TieBreakerEuclideanSquared:
+                    H = Math.Pow(StartX - EndX, 2) + Math.Pow(StartY - EndY, 2) * m_tieBreaker;
+                    break;
+
+
+         */
+
 
     }
 

@@ -153,7 +153,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
         ArrayList<Node> voisins = findVoisin(current);
         for(Node voisin : voisins){
-            if(voisin.getState() != 1 && !closedList.contains(voisin)){
+            if(voisin.getState() != BLOCK && !closedList.contains(voisin)){
                 openList.add(voisin);
                 voisin.setColor(Color.gray);
                 voisin.setParent(current);

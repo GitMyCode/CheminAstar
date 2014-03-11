@@ -61,16 +61,16 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
 
         Random ramdom = new Random();
-        int ran_row = ramdom.nextInt(row);
-        int ran_col = ramdom.nextInt(col);
+        int ran_row = ramdom.nextInt(row-2)+1;
+        int ran_col = ramdom.nextInt(col-2)+1;
         this.depart = null;
         this.depart = new Node(ran_row,ran_col,2);
         view_grid.setNode(ran_row,ran_col,2);
 
 
 
-        ran_row = ramdom.nextInt(row);
-        ran_col = ramdom.nextInt(col);
+        ran_row = ramdom.nextInt(row-2) +1;
+        ran_col = ramdom.nextInt(col-2) +1;
         this.arrive= null;
         this.arrive = new Node(ran_row,ran_col,3);
         view_grid.setNode(ran_row,ran_col,3);
@@ -113,7 +113,6 @@ public class FrameGeneral extends JFrame implements ActionListener{
         }
 
 }
-
     public void dessiner(){
         openList.add(depart);
         for(;openList.size()>0;){
@@ -196,7 +195,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
        return Math.sqrt(Math.pow(x1 - arrive.getXpos(),2) + (Math.pow(y1 - arrive.getYpos(),2))) * COUT;
 
 
-        /*heuristique trouver sur le net
+        /*heuristique trouver sur le net en c#
 
          case HeuristicType.Manhattan:
                     H = Math.Abs(StartX - EndX) + Math.Abs(StartY - EndY);

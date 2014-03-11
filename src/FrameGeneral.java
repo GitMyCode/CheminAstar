@@ -34,6 +34,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
     ArrayList<Node> openList = new ArrayList<Node>();
     ArrayList<Node> closedList = new ArrayList<Node>();
+    ArrayList<Node> path = new ArrayList<Node>();
 
     public FrameGeneral(){
 
@@ -95,6 +96,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
             openList.clear();
             closedList.clear();
+            path.clear();
 
 
             this.frame.remove(this.view_grid);
@@ -103,6 +105,11 @@ public class FrameGeneral extends JFrame implements ActionListener{
         }else{
             dessiner();
             view_grid.updateUI();
+            for(Node pathNode : path){
+              pathNode.setColor(Color.BLUE);
+            }
+            depart.setColor(Color.GREEN);
+            arrive.setColor(Color.RED);
         }
 
 }
@@ -122,20 +129,14 @@ public class FrameGeneral extends JFrame implements ActionListener{
         }
 
         Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
-        ArrayList<Node> path = new ArrayList<Node>();
+        path = new ArrayList<Node>();
         while (unPas.getParent() !=null){
             path.add(unPas);
             unPas = unPas.getParent();
         }
 
 
-        for(Node pathNode : path){
-            pathNode.setColor(Color.BLUE);
-
-        }
-        depart.setColor(Color.GREEN);
-        arrive.setColor(Color.RED);
-    }
+   }
 
     public Node findBestOpen(){
         Node best = openList.get(0);

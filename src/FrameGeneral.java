@@ -25,8 +25,8 @@ public class FrameGeneral extends JFrame implements ActionListener{
     JFrame frame;
     public OptionsView optionsView;
     public Grid view_grid;
-    public int  row=30;
-    public int col = 30;
+    public int  row=40;
+    public int col = 40;
 
 
     public Node depart;
@@ -124,14 +124,12 @@ public class FrameGeneral extends JFrame implements ActionListener{
         Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
         ArrayList<Node> path = new ArrayList<Node>();
         while (unPas.getParent() !=null){
-            System.out.println("ici");
             path.add(unPas);
             unPas = unPas.getParent();
         }
 
 
         for(Node pathNode : path){
-            System.out.println("un pas");
             pathNode.setColor(Color.BLUE);
 
         }
@@ -165,8 +163,10 @@ public class FrameGeneral extends JFrame implements ActionListener{
             }else{
                  int newG = current.getG_movementCost() + COUT;
                 if(newG < voisin.getG_movementCost()){
-                    voisin.setG_movementCost(newG);
-                    voisin.setParent(current);
+                 //   voisin.setG_movementCost(newG);
+                 //   voisin.setParent(current);
+                    current.setParent(voisin);
+                    current.setG_movementCost(newG);
                 }
             }
         }

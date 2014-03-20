@@ -118,18 +118,15 @@ public class FrameGeneral extends JFrame implements ActionListener{
             closedList.clear();
             path.clear();
 
-            System.out.println("1 ");
-            remove(view_grid);
-
-            System.out.println("2 ");
-
             initGrid();
-            System.out.println("3 ");
             view_grid.updateUI();
-            System.out.println("4 ");
+
         }else{
             dessiner();
+
+
         }
+        System.out.println("fini");
 
     }
 
@@ -142,62 +139,41 @@ public class FrameGeneral extends JFrame implements ActionListener{
 *
 * */
     public void dessiner(){
-        //openList.add(depart);
-
 
         timer_refresh.start();
 
         aStarAlgo();
-       /*
-        while(openList.size()>0){
-            long start = System.currentTimeMillis();
-            Node current = findBestOpen();
-            closedList.add(current);
-            current.setColor(Color.pink);
-            openList.remove(current);
-            if(current.getState() == 3){
-                System.out.println("arrive");
-                break;
-            }
-            calculerVoisinage(current);
-            long duration  = System.currentTimeMillis() - start
-        }
 
-        Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
-        path = new ArrayList<Node>();
-        while (unPas.getParent() !=null){
-            path.add(unPas);
-            unPas = unPas.getParent();
-        }
-*/
 
    }
    void aStarAlgo() {
        openList.add(depart);
-       final long duration = System.currentTimeMillis();
-       final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-       executor.scheduleAtFixedRate(new Runnable() {
+       Thread thread_astar = new Thread(new Runnable() {
            @Override
            public void run() {
-               long start = System.currentTimeMillis();
-               if(openList.size()>0){
+
+
+
+           }
+       });
+       final Timer astar_timer = new Timer(10,null);
+       astar_timer.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+
+               if(openList.size()>0){ // Ici c'est normalement un while, mais puisque je suis dnas un
+                   // Runnable c'est un if appeler plusieurs fois
                    Node current = findBestOpen();
                    closedList.add(current);
                    openList.remove(current);
 
-                   if(current.getColor() == Color.PINK){
-                       current.setColor(Color.orange);
-                   }else{
-                   current.setColor(Color.pink);}
+                   current.setColor(Color.pink);
 
 
                    if(current.getState() == 3){
                        System.out.println("arrive");
-
-
                        Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
                        path = new ArrayList<Node>();
-
                        while (unPas.getParent() !=null){
                            path.add(unPas);
                            unPas = unPas.getParent();
@@ -209,24 +185,43 @@ public class FrameGeneral extends JFrame implements ActionListener{
                        depart.setColor(Color.GREEN);
                        arrive.setColor(Color.RED);
                        view_grid.updateUI();
-                       System.out.println(" ici");
+                       astar_timer.stop();
+
+                   }
+                   calculerVoisinage(current);
+
+               }
+           }
+       });
+       astar_timer.start();
+     /*  final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+       executor.scheduleAtFixedRate(new Runnable() {
+           @Override
+           public void run() {
+               if(openList.size()>0){ // Ici c'est normalement un while, mais puisque je suis dnas un
+                                      // Runnable c'est un if appeler plusieurs fois
+                   Node current = findBestOpen();
+                   closedList.add(current);
+                   openList.remove(current);
+
+                   current.setColor(Color.pink);
+
+
+                   if(current.getState() == 3){
+                       System.out.println("arrive");
+
+
                        executor.shutdown();
                    }
-
-
                    calculerVoisinage(current);
-                   /*try{
 
-                       Thread.sleep(1000);
-                   }catch (Exception e){
-
-                   }*/
-                long temp = System.currentTimeMillis() - duration;
-                System.out.println(" duration: "+ temp);
                }
 
            }
+
        },0,10, TimeUnit.MILLISECONDS);
+*/
    }
 
 
@@ -252,8 +247,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
                 int newG = current.getG_movementCost() + COUT;
                 if(!openList.contains(voisin) || newG < voisin.getG_movementCost()){
-                    System.out.println("ici");
-                    current.setParent(current);
+                    voisin.setParent(current);
                     voisin.setG_movementCost(current.getG_movementCost()+ COUT );
                     voisin.setH_heuristique(calculHeuristique(voisin.getXpos(), voisin.getYpos()));
 

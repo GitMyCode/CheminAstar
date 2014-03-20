@@ -2,9 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferStrategy;
 import java.lang.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -19,13 +24,14 @@ public class FrameGeneral extends JFrame implements ActionListener{
     public static final int ARRIVE = 3;
 
     public static final int COUT = 10;
-    JFrame frame;
+    //JFrame frame;
     public OptionsView optionsView;
     public Grid view_grid;
     public int  row=40;
     public int col = 40;
 
 
+    final Timer timer_refresh = new Timer(100,null);
     public Node depart;
     public Node arrive;
 
@@ -36,23 +42,39 @@ public class FrameGeneral extends JFrame implements ActionListener{
     public FrameGeneral(){
 
 
-        frame = new JFrame("Puissance 4");
-        frame.setSize(650,650);
-        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        super("Puissance 4");
+        Dimension frame_dim = new Dimension(650,650);
+        setSize(frame_dim);
+        setPreferredSize(frame_dim);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
         this.optionsView = new OptionsView();
-        this.optionsView.setSize(20,10);
+        this.optionsView.setSize(20, 10);
+
+        timer_refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view_grid.repaint();
+            }
+        });
+
 
         initGrid();
         optionsView.setListener(this);
-        frame.add(optionsView, BorderLayout.SOUTH);
-       // frame.add(view_grid,BorderLayout.CENTER);
-        frame.setVisible(true);
+        add(optionsView, BorderLayout.SOUTH);
+        // frame.add(view_grid,BorderLayout.CENTER);
+        pack();
+
+
+
+        setVisible(true);
+        setIgnoreRepaint(true);
     }
 
     private void initGrid(){
 
+        timer_refresh.stop();
         this.view_grid = null;
         this.view_grid = new Grid(this.row,this.col);
 
@@ -81,7 +103,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
         }
 
-        this.frame.add(this.view_grid,BorderLayout.CENTER);
+        add(this.view_grid, BorderLayout.CENTER);
     }
 
     @Override
@@ -91,29 +113,44 @@ public class FrameGeneral extends JFrame implements ActionListener{
         System.out.println(actionEvent.getActionCommand());
         if(actionEvent.getActionCommand() == "Reset"){
           // view_grid.removeAll();
-
+            timer_refresh.stop();
             openList.clear();
             closedList.clear();
             path.clear();
 
+            System.out.println("1 ");
+            remove(view_grid);
 
-            this.frame.remove(this.view_grid);
+            System.out.println("2 ");
+
             initGrid();
+            System.out.println("3 ");
             view_grid.updateUI();
+            System.out.println("4 ");
         }else{
             dessiner();
-            view_grid.updateUI();
-            for(Node pathNode : path){
-              pathNode.setColor(Color.BLUE);
-            }
-            depart.setColor(Color.GREEN);
-            arrive.setColor(Color.RED);
         }
 
-}
+    }
+
+
+
+
+/*       L'ALGORITHME COMMENCE ICI JUSQU'EN BAS
+*
+*
+*
+* */
     public void dessiner(){
-        openList.add(depart);
+        //openList.add(depart);
+
+
+        timer_refresh.start();
+
+        aStarAlgo();
+       /*
         while(openList.size()>0){
+            long start = System.currentTimeMillis();
             Node current = findBestOpen();
             closedList.add(current);
             current.setColor(Color.pink);
@@ -123,6 +160,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
                 break;
             }
             calculerVoisinage(current);
+            long duration  = System.currentTimeMillis() - start
         }
 
         Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
@@ -131,9 +169,66 @@ public class FrameGeneral extends JFrame implements ActionListener{
             path.add(unPas);
             unPas = unPas.getParent();
         }
-
+*/
 
    }
+   void aStarAlgo() {
+       openList.add(depart);
+       final long duration = System.currentTimeMillis();
+       final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+       executor.scheduleAtFixedRate(new Runnable() {
+           @Override
+           public void run() {
+               long start = System.currentTimeMillis();
+               if(openList.size()>0){
+                   Node current = findBestOpen();
+                   closedList.add(current);
+                   openList.remove(current);
+
+                   if(current.getColor() == Color.PINK){
+                       current.setColor(Color.orange);
+                   }else{
+                   current.setColor(Color.pink);}
+
+
+                   if(current.getState() == 3){
+                       System.out.println("arrive");
+
+
+                       Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
+                       path = new ArrayList<Node>();
+
+                       while (unPas.getParent() !=null){
+                           path.add(unPas);
+                           unPas = unPas.getParent();
+                       }
+
+                       for(Node pathNode : path){
+                           pathNode.setColor(Color.BLUE);
+                       }
+                       depart.setColor(Color.GREEN);
+                       arrive.setColor(Color.RED);
+                       view_grid.updateUI();
+                       System.out.println(" ici");
+                       executor.shutdown();
+                   }
+
+
+                   calculerVoisinage(current);
+                   /*try{
+
+                       Thread.sleep(1000);
+                   }catch (Exception e){
+
+                   }*/
+                long temp = System.currentTimeMillis() - duration;
+                System.out.println(" duration: "+ temp);
+               }
+
+           }
+       },0,10, TimeUnit.MILLISECONDS);
+   }
+
 
     public Node findBestOpen(){
         Node best = openList.get(0);
@@ -152,21 +247,31 @@ public class FrameGeneral extends JFrame implements ActionListener{
         ArrayList<Node> voisins = findVoisin(current);
         for(Node voisin : voisins){
             if(voisin.getState() != BLOCK && !closedList.contains(voisin)){
-                openList.add(voisin);
                 voisin.setColor(Color.gray);
-                voisin.setParent(current);
-                voisin.setG_movementCost(current.getG_movementCost()+ COUT );
-                voisin.setH_heuristique(calculHeuristique(voisin.getXpos(), voisin.getYpos()));
 
-            }else{
-                 int newG = current.getG_movementCost() + COUT;
+
+                int newG = current.getG_movementCost() + COUT;
+                if(!openList.contains(voisin) || newG < voisin.getG_movementCost()){
+                    System.out.println("ici");
+                    current.setParent(current);
+                    voisin.setG_movementCost(current.getG_movementCost()+ COUT );
+                    voisin.setH_heuristique(calculHeuristique(voisin.getXpos(), voisin.getYpos()));
+
+
+                   // current.setG_movementCost(newG);
+                    //current.setParent(voisin);
+                    if(!openList.contains(voisin)){
+                        openList.add(voisin);
+                    }
+                }
+            }/*else{
                 if(newG < voisin.getG_movementCost()){
                  //   voisin.setG_movementCost(newG);
-                 //   voisin.setParent(current);
+                  //  voisin.setParent(current);
                     current.setParent(voisin);
                     current.setG_movementCost(newG);
                 }
-            }
+            }*/
         }
 
        }

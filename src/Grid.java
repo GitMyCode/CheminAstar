@@ -23,9 +23,20 @@ public class Grid extends JPanel implements MouseListener{
     int nb_square;
     int row;
     int col;
+
+    public Node current;
     public Grid(){
         setSize(200, 100);
          }
+
+
+
+   @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+    }
+
     public Grid(int row, int col){
        super();
         this.row = row;

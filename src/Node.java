@@ -73,6 +73,8 @@ public class Node extends JPanel{
         this.setBackground(getColor());
     }
 
+
+
     public void paint(Graphics g)
     {
         super.paint(g);

@@ -11,8 +11,4 @@ public class Chemin {
 
 
     }
-    public void dessinerChemin(){
-
-
-    }
 }

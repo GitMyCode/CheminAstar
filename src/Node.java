@@ -16,7 +16,7 @@ public class Node extends JPanel{
 
     public final Color C_LIBRE = Color.white;
     public final Color C_BLOCK = Color.BLACK;
-    public final Color C_START = Color.GREEN;
+    public final Color C_START = Color.BLUE ;
     public final Color C_ARRIVE = Color.RED;
 
     public final int LIBRE  = 0;

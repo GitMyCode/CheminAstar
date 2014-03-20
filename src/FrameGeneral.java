@@ -22,10 +22,11 @@ public class FrameGeneral extends JFrame implements ActionListener{
     //JFrame frame;
     public OptionsView optionsView;
     public Grid view_grid;
-    public int  row=60;
-    public int col =60;
+    public int  row=90;
+    public int col =90;
 
 
+    final Timer timer_aStar = new Timer(3,null);
     final Timer timer_refresh = new Timer(100,null);
     public Node depart;
     public Node arrive;
@@ -53,7 +54,12 @@ public class FrameGeneral extends JFrame implements ActionListener{
                 view_grid.repaint();
             }
         });
-
+        timer_aStar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aStarAlgo();
+            }
+        });
 
         initGrid();
         optionsView.setListener(this);
@@ -65,39 +71,45 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
         setVisible(true);
         setIgnoreRepaint(true);
+
     }
 
     private void initGrid(){
 
         timer_refresh.stop();
+        timer_aStar.stop();
 
         this.view_grid = null;
         this.view_grid = new Grid(this.row,this.col);
 
 
+
         Random ramdom = new Random();
-        int ran_row = ramdom.nextInt(row-2)+1;
-        int ran_col = ramdom.nextInt(col-2)+1;
+        int ran_row,ran_col;
+
+        for (int i=0;i< view_grid.getNbSquare()/3; i++){
+            ran_row = ramdom.nextInt(row);
+            ran_col = ramdom.nextInt(col);
+           // if((depart.getXpos()!=ran_row && depart.getYpos()!=ran_col)
+         //           && ( arrive.getXpos()!=ran_row && arrive.getYpos()!=ran_col)){
+                 view_grid.setNode(ran_row,ran_col,1);
+           // }
+
+        }
+        ran_row = ramdom.nextInt(row-2)+1;
+        ran_col = ramdom.nextInt(col-2)+1;
         this.depart = null;
-        this.depart = new Node(ran_row,ran_col,2);
-        view_grid.setNode(ran_row,ran_col,2);
+        this.depart = new Node(ran_row,ran_col,START);
+        view_grid.setNode(ran_row,ran_col,START);
 
 
 
         ran_row = ramdom.nextInt(row-2) +1;
         ran_col = ramdom.nextInt(col-2) +1;
         this.arrive= null;
-        this.arrive = new Node(ran_row,ran_col,3);
-        view_grid.setNode(ran_row,ran_col,3);
-        for (int i=0;i< view_grid.getNbSquare()/2; i++){
-            ran_row = ramdom.nextInt(row);
-            ran_col = ramdom.nextInt(col);
-            if(depart.getXpos()!=ran_row && depart.getYpos()!=ran_col
-                    && arrive.getXpos()!=ran_row && arrive.getYpos()!=ran_col){
-                 view_grid.setNode(ran_row,ran_col,1);
-            }
+        this.arrive = new Node(ran_row,ran_col,ARRIVE);
+        view_grid.setNode(ran_row,ran_col,ARRIVE);
 
-        }
 
         add(this.view_grid, BorderLayout.CENTER);
     }
@@ -136,26 +148,62 @@ public class FrameGeneral extends JFrame implements ActionListener{
 * */
     public void dessiner(){
 
-        timer_refresh.start();
 
-        aStarAlgo();
+/*
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                System.out.println("thread");
+                aStarAlgo();
+                return;
+            }
+        });
+        thread.start();
+*/
+        openList.add(depart);
+
+        timer_refresh.start();
+        timer_aStar.start();
+
+        /*for (Node pathNode : path) {
+            pathNode.setColor(Color.getHSBColor(120, 100, 50));
+        }*/
 
 
    }
    void aStarAlgo() {
+       /*
        openList.add(depart);
-      /* Thread thread_astar = new Thread(new Runnable() {
-           @Override
-           public void run() {
+       while(openList.size()>0){
+           Node current = findBestOpen();
+           closedList.add(current);
+           openList.remove(current);
 
+           current.setColor(Color.cyan);
+           if(current.getState() == ARRIVE){
+               break;
+           }
 
+           calculerVoisinage(current);
+
+           try{
+               Thread.sleep(15);
+           }catch (Exception e){
 
            }
-       });*/
-       final Timer timer_aStar = new Timer(10,null);
-       timer_aStar.addActionListener(new ActionListener() {
-           @Override
-           public void actionPerformed(ActionEvent e) {
+       }
+
+       Node unPas = view_grid.grids[arrive.getX()][arrive.getYpos()];
+       path = new ArrayList<Node>();
+       while(unPas.getParent()!= null){
+           path.add(unPas);
+           unPas= unPas.getParent();
+       }
+        return;
+       */
+
+
 
                if (openList.size() > 0) { // Ici c'est normalement un while, mais puisque je suis dnas un
                    // Runnable c'est un if appeler plusieurs fois
@@ -166,7 +214,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
                    current.setColor(Color.cyan);
 
 
-                   if (current.getState() == 3) {
+                   if (current.getState() == ARRIVE) {
                        System.out.println("arrive");
                        Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
                        path = new ArrayList<Node>();
@@ -178,18 +226,13 @@ public class FrameGeneral extends JFrame implements ActionListener{
                        for (Node pathNode : path) {
                            pathNode.setColor(Color.getHSBColor(120, 100, 50));
                        }
-                       depart.setColor(Color.GREEN);
-                       arrive.setColor(Color.RED);
-                       view_grid.updateUI();
                        timer_aStar.stop();
-
                    }
                    calculerVoisinage(current);
-
+               }else {
+               timer_aStar.stop();
                }
-           }
-       });
-       timer_aStar.start();
+
      /*  final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
        executor.scheduleAtFixedRate(new Runnable() {
@@ -218,8 +261,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
 
        },0,10, TimeUnit.MILLISECONDS);
 */
-   }
-
+}
 
     public Node findBestOpen(){
         Node best = openList.get(0);

@@ -2,14 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferStrategy;
 import java.lang.*;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -27,8 +22,8 @@ public class FrameGeneral extends JFrame implements ActionListener{
     //JFrame frame;
     public OptionsView optionsView;
     public Grid view_grid;
-    public int  row=40;
-    public int col = 40;
+    public int  row=60;
+    public int col =60;
 
 
     final Timer timer_refresh = new Timer(100,null);
@@ -75,6 +70,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
     private void initGrid(){
 
         timer_refresh.stop();
+
         this.view_grid = null;
         this.view_grid = new Grid(this.row,this.col);
 
@@ -148,44 +144,44 @@ public class FrameGeneral extends JFrame implements ActionListener{
    }
    void aStarAlgo() {
        openList.add(depart);
-       Thread thread_astar = new Thread(new Runnable() {
+      /* Thread thread_astar = new Thread(new Runnable() {
            @Override
            public void run() {
 
 
 
            }
-       });
-       final Timer astar_timer = new Timer(10,null);
-       astar_timer.addActionListener(new ActionListener() {
+       });*/
+       final Timer timer_aStar = new Timer(10,null);
+       timer_aStar.addActionListener(new ActionListener() {
            @Override
            public void actionPerformed(ActionEvent e) {
 
-               if(openList.size()>0){ // Ici c'est normalement un while, mais puisque je suis dnas un
+               if (openList.size() > 0) { // Ici c'est normalement un while, mais puisque je suis dnas un
                    // Runnable c'est un if appeler plusieurs fois
                    Node current = findBestOpen();
                    closedList.add(current);
                    openList.remove(current);
 
-                   current.setColor(Color.pink);
+                   current.setColor(Color.cyan);
 
 
-                   if(current.getState() == 3){
+                   if (current.getState() == 3) {
                        System.out.println("arrive");
                        Node unPas = view_grid.grids[arrive.getXpos()][arrive.getYpos()];
                        path = new ArrayList<Node>();
-                       while (unPas.getParent() !=null){
+                       while (unPas.getParent() != null) {
                            path.add(unPas);
                            unPas = unPas.getParent();
                        }
 
-                       for(Node pathNode : path){
-                           pathNode.setColor(Color.BLUE);
+                       for (Node pathNode : path) {
+                           pathNode.setColor(Color.getHSBColor(120, 100, 50));
                        }
                        depart.setColor(Color.GREEN);
                        arrive.setColor(Color.RED);
                        view_grid.updateUI();
-                       astar_timer.stop();
+                       timer_aStar.stop();
 
                    }
                    calculerVoisinage(current);
@@ -193,7 +189,7 @@ public class FrameGeneral extends JFrame implements ActionListener{
                }
            }
        });
-       astar_timer.start();
+       timer_aStar.start();
      /*  final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
        executor.scheduleAtFixedRate(new Runnable() {

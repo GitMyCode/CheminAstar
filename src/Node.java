@@ -30,6 +30,10 @@ public class Node extends JPanel{
     private TextArea text_heuristique;
 
 
+    //pour bfs et dfs
+    public boolean visited = false;
+
+
 
 
     private Node parent;

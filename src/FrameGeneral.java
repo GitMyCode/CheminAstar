@@ -1,10 +1,10 @@
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 /**
  *
@@ -166,12 +166,70 @@ public class FrameGeneral extends JFrame implements ActionListener{
         timer_refresh.start();
         timer_aStar.start();
 
+       // dfsAlgo();
+       // System.out.println("fin algo");
         /*for (Node pathNode : path) {
             pathNode.setColor(Color.getHSBColor(120, 100, 50));
         }*/
 
 
    }
+
+   void dfsAlgo(){
+
+       Stack<Node> stack = new Stack<Node>();
+       depart.visited= true;
+       stack.add(depart);
+
+       while(!stack.isEmpty()){
+           Node node = stack.peek();
+           boolean childNonVisiter= false;
+
+           if(node.getState()!=ARRIVE){
+               node.setColor(Color.cyan);
+               ArrayList<Node> voisins = findVoisin(node);
+               for(Node voisin : voisins){
+                   if(!voisin.visited){
+                       childNonVisiter= true;
+                       stack.push(voisin);
+                       voisin.visited=true;
+                       break;
+                   }
+               }
+
+               if(!childNonVisiter){
+                   stack.pop();
+               }
+           }else {
+               return;
+           }
+
+       }
+
+   }
+    void bfsAlgo(){
+
+        Queue<Node> queue = new LinkedList<Node>();
+        depart.visited = true;
+        queue.add(depart);
+
+        while (queue.size()>0){
+            Node node = queue.remove();
+            node.setColor(Color.cyan);
+            if(node.getState()!= ARRIVE){
+                for(Node child : findVoisin(node)){
+                    if(!child.visited){
+
+                        child.visited = true;
+                        queue.add(child);
+                    }
+                }
+            }else{
+                break;
+            }
+        }
+    }
+
    void aStarAlgo() {
        /*
        openList.add(depart);
